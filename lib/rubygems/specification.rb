@@ -806,19 +806,31 @@ class Gem::Specification < Gem::BasicSpecification
     end
   end
 
+  def self._stubs(with_default_stubs: true)
+    pattern = "*.gemspec"
+    stubs = if with_default_stubs
+              Gem.loaded_specs.values + installed_stubs(dirs, pattern) + default_stubs(pattern)
+            else
+              Gem.loaded_specs.values + installed_stubs(dirs, pattern)
+            end
+    stubs = uniq_by(stubs) { |stub| stub.full_name }
+
+    _resort!(stubs)
+    @@stubs_by_name = stubs.select { |s| Gem::Platform.match s.platform }.group_by(&:name)
+    stubs
+  end
+
+  private_class_method :_stubs
+
   ##
   # Returns a Gem::StubSpecification for every installed gem
 
   def self.stubs
-    @@stubs ||= begin
-      pattern = "*.gemspec"
-      stubs = Gem.loaded_specs.values + installed_stubs(dirs, pattern) + default_stubs(pattern)
-      stubs = uniq_by(stubs) { |stub| stub.full_name }
+    @@stubs ||= _stubs
+  end
 
-      _resort!(stubs)
-      @@stubs_by_name = stubs.select { |s| Gem::Platform.match s.platform }.group_by(&:name)
-      stubs
-    end
+  def self.stubs_without_defaults
+    @@stubs ||= _stubs(with_default_stubs: false)
   end
 
   ##
@@ -833,6 +845,16 @@ class Gem::Specification < Gem::BasicSpecification
   end
 
   EMPTY = [].freeze # :nodoc:
+
+  ##
+  # Returns a Gem::StubSpecification for user installed gems
+  def self.user_installed_stubs(pattern = "*.gemspec")
+    base_dir = Gem.user_dir
+    gems_dir = File.join(base_dir, "gems")
+    gemspec_stubs_in(Gem.default_specifications_dir, pattern) do |path|
+      Gem::StubSpecification.default_gemspec_stub(path, base_dir, gems_dir)
+    end
+  end
 
   ##
   # Returns a Gem::StubSpecification for installed gem named +name+
