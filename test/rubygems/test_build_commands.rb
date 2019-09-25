@@ -3,9 +3,9 @@
 require "rubygems/test_case"
 require "open3"
 
-class TestRakePackage < Minitest::Test
+class TestBuildCommands < Minitest::Test
 
-  def test_builds_ok
+  def test_rake_package_builds_ok
     skip unless File.exist?(File.expand_path("../../../Rakefile", __FILE__))
 
     output, status = Open3.capture2e("rake package")

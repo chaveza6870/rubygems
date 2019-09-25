@@ -552,6 +552,7 @@ test/rubygems/specifications/bar-0.0.2.gemspec
 test/rubygems/specifications/foo-0.0.1-x86-mswin32.gemspec
 test/rubygems/ssl_cert.pem
 test/rubygems/ssl_key.pem
+test/rubygems/test_build_commands.rb
 test/rubygems/test_bundled_ca.rb
 test/rubygems/test_config.rb
 test/rubygems/test_deprecate.rb
@@ -681,7 +682,6 @@ test/rubygems/test_gem_validator.rb
 test/rubygems/test_gem_version.rb
 test/rubygems/test_gem_version_option.rb
 test/rubygems/test_kernel.rb
-test/rubygems/test_rake_package.rb
 test/rubygems/test_remote_fetch_error.rb
 test/rubygems/test_require.rb
 test/rubygems/wrong_key_cert.pem
